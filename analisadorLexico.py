@@ -70,30 +70,18 @@ def searchKeyWord(nome):
     return ID #retornar id?
 
 #2a etapa: IDENTIFICADORES
-Identificadores = []
+Identificadores = {}
+cont = 0
 def searchName(nome): #falta implementar o algoritmo hash
-    if Identificadores.index(nome) == -1:
-        Identificadores.append(nome)
+    global cont
+    if nome not in Identificadores.keys():
+        Identificadores[nome] = cont
+        cont = cont + 1
 
 #3a etapa: LITERAIS
 vConsts = []
-class t_const:
-    def __init__(type, cVal, nVal,sVal):
-        self.type=type
-        self.cVal=cVal
-        self.nVal=nVal
-        self.sVal=sVal
-def addCharConst(c):
-    aux=t_const(0,c,None,None)
-    vConsts.append(aux)
-    return len(vConsts)-1
-def addIntConst(n):
-    aux=t_const(1,None,n,None)
-    vConsts.append(aux)
-    return len(vConsts)-1
-def addStringConst(s):
-    aux=t_const(2,None,None,s)
-    vConsts.append(aux)
+def addConst(s):
+    vConsts.append(s)
     return len(vConsts)-1
 def getConst(n):
     return vConsts[n]
