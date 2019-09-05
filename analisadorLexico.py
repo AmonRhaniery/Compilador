@@ -55,7 +55,8 @@ UNKNOWN = 48
 #1a etapa: PALAVRAS RESERVADAS
 PalavrasReservadas = [ARRAY, BOOLEAN, BREAK, CHAR, CONTINUE, DO, ELSE, FALSE, FUNCTION, IF, INTEGER, OF, STRING, STRUCT, TRUE, TYPE, VAR, WHILE]
 
-def searchKeyWord(nome): #falta retornar o token dos identificadores
+#searchKeyWord retorna token de PALAVRAS RESERVADAS ou ID
+def searchKeyWord(nome): 
     esquerda=0
     direita=len(palavrasReservadas) - 1
     while esquerda <= direita:
@@ -66,15 +67,13 @@ def searchKeyWord(nome): #falta retornar o token dos identificadores
             direita = meio - 1
         else: # A[meio] < item
             esquerda = meio + 1
-    return -1
+    return ID #retornar id?
 
 #2a etapa: IDENTIFICADORES
 Identificadores = []
 def searchName(nome): #falta implementar o algoritmo hash
     if Identificadores.index(nome) == -1:
         Identificadores.append(nome)
-    else:
-        #o que fazer?
 
 #3a etapa: LITERAIS
 vConsts = []
@@ -106,15 +105,15 @@ nextChar=arq.read(1)
 
 #AUTOMATO FINITO DO ANALISADOR LEXICO
 def ispace(n):
-    if n in : [chr(10), chr(13)," ", "\t", "\v", "\f"]
+    if n in [chr(10), chr(13)," ", "\t", "\v", "\f"]:
         return True
     return False
 def isalpha(n):
-    if n in : string.ascii_letters
+    if n in string.ascii_letters:
         return True
     return False
 def isdigit(n):
-    if n in : [0,1,2,3,4,5,6,7,8,9]
+    if n in [0,1,2,3,4,5,6,7,8,9]:
         return True
     return False
 
@@ -134,7 +133,7 @@ def nextToken():
     elif (isdigit(nextChar)):
         numeralAux=[]
         while(isdigit(nextChar)):
-            numeralAux[].append(nextChar)
+            numeralAux.append(nextChar)
             nextChar=arq.read(1)
         numeral=separador.join(numeralAux)
         token = NUMERAL
@@ -142,7 +141,7 @@ def nextToken():
     elif (nextChar=="\""):
         stringAux=[]
         while(nextChar!="\""):
-            stringAux[].append(nextChar)
+            stringAux.append(nextChar)
             nextChar=arq.read(1)
         string=separador.join(stringAux)
         token = STRING
@@ -158,7 +157,7 @@ def nextToken():
             token=COLON
         elif(ch=="+"):
             nextChar=arq.read(1)
-            if(nextChar=="+")
+            if(nextChar=="+"):
                 token=PLUS_PLUS
                 nextChar=arq.read(1)
             else:
