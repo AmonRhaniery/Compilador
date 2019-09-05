@@ -55,8 +55,8 @@ UNKNOWN = 48
 #1a etapa: PALAVRAS RESERVADAS
 PalavrasReservadas = [ARRAY, BOOLEAN, BREAK, CHAR, CONTINUE, DO, ELSE, FALSE, FUNCTION, IF, INTEGER, OF, STRING, STRUCT, TRUE, TYPE, VAR, WHILE]
 
-#searchKeyWord retorna token de PALAVRAS RESERVADAS ou ID
 def searchKeyWord(nome): 
+    """Retorna token de PALAVRAS RESERVADAS ou ID"""
     esquerda=0
     direita=len(palavrasReservadas) - 1
     while esquerda <= direita:
@@ -72,7 +72,9 @@ def searchKeyWord(nome):
 #2a etapa: IDENTIFICADORES
 Identificadores = {}
 cont = 0
-def searchName(nome): #falta implementar o algoritmo hash
+def searchName(nome): 
+    """Adiciona os identificadores num formato Hash juntamente com token secundário.
+    O token secundário é a ordem do identificador no texto, sendo considerado a primeira aparição apenas."""
     global cont
     if nome not in Identificadores.keys():
         Identificadores[nome] = cont
@@ -81,9 +83,12 @@ def searchName(nome): #falta implementar o algoritmo hash
 #3a etapa: LITERAIS
 vConsts = []
 def addConst(s):
+    """Adiciona os literais do programa, que representam as constantes da linguagem. Estão associados aos tokens CHARACTER, NUMERAL E STRINGVAL.
+    O token secundário é a ordem que foram adicionadas."""
     vConsts.append(s)
     return len(vConsts)-1
 def getConst(n):
+    """Retorna a constante de token secundário n."""
     return vConsts[n]
 
 #LER CARACTER
