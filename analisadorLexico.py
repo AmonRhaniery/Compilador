@@ -91,17 +91,17 @@ def getConst(n):
     """Retorna a constante de token secundário n."""
     return vConsts[n]
 
-#LER CARACTER
+#LER CARACTER POR CARACTER
 
 arq = open('codigo.txt', 'r')
 nextChar=arq.read(1)
 
 #AUTOMATO FINITO DO ANALISADOR LEXICO
-def ispace(n):
+def isspace(n):
     if n in [chr(10), chr(13)," ", "\t", "\v", "\f"]:
         return True
     return False
-def isalpha(n):
+def isalnum(n):
     if n in string.ascii_letters:
         return True
     return False
@@ -111,9 +111,10 @@ def isdigit(n):
     return False
 
 def nextToken():
+    """Retorna o token lido e suas variáveis token principal e secundário"""
     while(isspace(nextChar)):
         nextChar=arq.read(1)
-    if (isalpha(nextChar)):
+    if (isalnum(nextChar)):
         textAux=[]
         while(isalnum(nextChar) or nextChar == '_'):
             textAux.append(nextChar)
@@ -130,7 +131,7 @@ def nextToken():
             nextChar=arq.read(1)
         numeral=separador.join(numeralAux)
         token = NUMERAL
-        tokenSecundario = addIntConst(numeral)
+        tokenSecundario = addConst(numeral)
     elif (nextChar=="\""):
         stringAux=[]
         while(nextChar!="\""):
@@ -138,12 +139,12 @@ def nextToken():
             nextChar=arq.read(1)
         string=separador.join(stringAux)
         token = STRING
-        tokenSecundario = addStringConst(string)
+        tokenSecundario = addConst(string)
     else:
         if(ch=="\""):
             nextChar=arq.read(1)
             token=CHARACTER
-            tokenSecundario=addCharConst(nextChar)
+            tokenSecundario=addConst(nextChar)
             nextChar=arq.read(2) #pular o "
         elif(ch==":"):
             nextChar=arq.read(1)
