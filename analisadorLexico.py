@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import string
 
 #palavras reservadas
@@ -53,6 +54,8 @@ STRINGVAL = 46
 ID = 47
 #token desconhecido
 UNKNOWN = 48
+#fim do arquivo
+EOF=49
 
 #1a etapa: PALAVRAS RESERVADAS
 PalavrasReservadas = [ARRAY, BOOLEAN, BREAK, CHAR, CONTINUE, DO, ELSE, FALSE, FUNCTION, IF, INTEGER, OF, STRING, STRUCT, TRUE, TYPE, VAR, WHILE]
@@ -75,7 +78,7 @@ def searchKeyWord(nome):
 Identificadores = {}
 cont = 0
 def searchName(nome): 
-    """Adiciona os identificadores num formato Hash juntamente com token secundário.
+    """Adiciona os identificadores num formato Hash juntamente com token secundario.
     O token secundário é a ordem do identificador no texto, sendo considerado a primeira aparição apenas."""
     global cont
     if nome not in Identificadores.keys():
@@ -95,7 +98,6 @@ def getConst(n):
 
 #LER CARACTER POR CARACTER
 arq = open('codigo.ssl', 'r')
-global nextChar
 nextChar = arq.read(1)
 
 #AUTOMATO FINITO DO ANALISADOR LEXICO
@@ -113,18 +115,25 @@ def isdigit(n):
     return False
 
 linha = 1
+ch=1
 def nextToken():
     global nextChar
+    global ch
+    global linha
     """Retorna o token lido e suas variáveis token principal e secundário"""
     while(isspace(nextChar)):
         if (nextChar == "\n") or (nextChar == "\r"):
             linha+=1
         nextChar=arq.read(1)
-    if (isalnum(nextChar)):
+        ch+=1
+    if (nextChar==""):
+            token=EOF
+    elif (isalnum(nextChar)):
         textAux=[]
         while(isalnum(nextChar) or nextChar == '_'):
             textAux.append(nextChar)
             nextChar=arq.read(1)
+            ch+=1
         separador=""
         text=separador.join(textAux)
         token = searchKeyWord(text)
@@ -135,6 +144,7 @@ def nextToken():
         while(isdigit(nextChar)):
             numeralAux.append(nextChar)
             nextChar=arq.read(1)
+            ch+=1
         numeral=separador.join(numeralAux)
         token = NUMERAL
         tokenSecundario = addConst(numeral)
@@ -143,117 +153,145 @@ def nextToken():
         while(nextChar!="\""):
             stringAux.append(nextChar)
             nextChar=arq.read(1)
+            ch+=1
         string=separador.join(stringAux)
         token = STRING
         tokenSecundario = addConst(string)
     else:
         if(nextChar=="\""):
             nextChar=arq.read(1)
+            ch+=1
             token=CHARACTER
             tokenSecundario=addConst(nextChar)
             nextChar=arq.read(2) #pular o "
+            ch+=2
         elif(nextChar==":"):
             nextChar=arq.read(1)
+            ch+=1
             token=COLON
         elif(nextChar=="+"):
             nextChar=arq.read(1)
+            ch+=1
             if(nextChar=="+"):
                 token=PLUS_PLUS
                 nextChar=arq.read(1)
+                ch+=1
             else:
                 token=PLUS
         elif(nextChar=="-"):
             nextChar=arq.read(1)
+            ch+=1
             if(nextChar=="-"):
                 token=MINUS_MINUS
                 nextChar=arq.read(1)
+                ch+=1
             else:
                 token=MINUS
         elif(nextChar==";"):
             nextChar=arq.read(1)
+            ch+=1
             token=SEMI_COLON
         elif(nextChar==","):
             nextChar=arq.read(1)
+            ch+=1
             token=COMMA
         elif(nextChar==","):
             nextChar=arq.read(1)
+            ch+=1
             token=COMMA
         elif(nextChar=="="):
             nextChar=arq.read(1)
+            ch+=1
             if(nextChar=="="):
                 token=EQUAL_EQUAL
                 nextChar=arq.read(1)
+                ch+=1
             else:
                 token=EQUALS
         elif(nextChar=="["):
             nextChar=arq.read(1)
+            ch+=1
             token=LEFT_SQUARE
         elif(nextChar=="]"):
             nextChar=arq.read(1)
+            ch+=1
             token=RIGHT_SQUARE
         elif(nextChar=="{"):
             nextChar=arq.read(1)
+            ch+=1
             token=LEFT_BRACES
         elif(nextChar=="}"):
             nextChar=arq.read(1)
+            ch+=1
             token=RIGHT_BRACES
         elif(nextChar=="("):
             nextChar=arq.read(1)
+            ch+=1
             token=LEFT_PARENTHESIS
         elif(nextChar==")"):
             nextChar=arq.read(1)
+            ch+=1
             token=RIGHT_PARENTHESIS
         elif(nextChar=="&&"):
             nextChar=arq.read(1)
+            ch+=1
             token=AND
         elif(nextChar=="||"):
             nextChar=arq.read(1)
+            ch+=1
             token=OR
         elif(nextChar=="<"):
             nextChar=arq.read(1)
+            ch+=1
             if(nextChar)=="=":
                 token=LESS_OR_EQUAL
                 nextChar=arq.read(1)
+                ch+=1
             else:
                 token=LESS_THAN
         elif(nextChar==">"):
             nextChar=arq.read(1)
+            ch+=1
             if(nextChar)=="=":
                 token=GREATER_OR_EQUAL
                 nextChar=arq.read(1)
+                ch+=1
             else:
                 token=GREATER_THAN
         elif(nextChar=="!"):
             nextChar=arq.read(1)
+            ch+=1
             if(nextChar)=="=":
                 token=NOT_EQUAL
                 nextChar=arq.read(1)
+                ch+=1
             else:
                 token=NOT
         elif(nextChar=="*"):
             nextChar=arq.read(1)
+            ch+=1
             token=TIMES
         elif(nextChar=="."):
             nextChar=arq.read(1)
+            ch+=1
             token=DOT        
         elif(nextChar=="/"):
             nextChar=arq.read(1)
+            ch+=1
             token=DIVIDE
         else:
-            UNKNOWN
+            nextChar=arq.read(1)
+            ch+=1
+            token=UNKNOWN
     return token
 
-
-
 Erro=False
-try:
-    while True:
-        tokenAux=nextToken
+tokenAux=nextToken()
+while (tokenAux!=EOF):
     if(tokenAux==UNKNOWN):
-        print("Caracter não esperado na linha " + str(linha))
+        print("Caracter "+str(ch+1)+" não esperado na linha " + str(linha))
         Erro=True
-except EOFError:
-    pass
+    tokenAux=nextToken()
 
 if (not Erro):
     print ("Sem erros léxicos.")
