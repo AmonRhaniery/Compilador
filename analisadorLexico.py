@@ -141,23 +141,98 @@ def nextToken():
         token = STRING
         tokenSecundario = addConst(string)
     else:
-        if(ch=="\""):
+        if(nextChar=="\""):
             nextChar=arq.read(1)
             token=CHARACTER
             tokenSecundario=addConst(nextChar)
             nextChar=arq.read(2) #pular o "
-        elif(ch==":"):
+        elif(nextChar==":"):
             nextChar=arq.read(1)
             token=COLON
-        elif(ch=="+"):
+        elif(nextChar=="+"):
             nextChar=arq.read(1)
             if(nextChar=="+"):
                 token=PLUS_PLUS
                 nextChar=arq.read(1)
             else:
                 token=PLUS
-        elif():#FAZER O RESTANTE
-
+        elif(nextChar=="-"):
+            nextChar=arq.read(1)
+            if(nextChar=="-"):
+                token=MINUS_MINUS
+                nextChar=arq.read(1)
+            else:
+                token=MINUS
+        elif(nextChar==";"):
+            nextChar=arq.read(1)
+            token=SEMI_COLON
+        elif(nextChar==","):
+            nextChar=arq.read(1)
+            token=COMMA
+        elif(nextChar==","):
+            nextChar=arq.read(1)
+            token=COMMA
+        elif(nextChar=="="):
+            nextChar=arq.read(1)
+            if(nextChar=="="):
+                token=EQUAL_EQUAL
+                nextChar=arq.read(1)
+            else:
+                token=EQUALS
+        elif(nextChar=="["):
+            nextChar=arq.read(1)
+            token=LEFT_SQUARE
+        elif(nextChar=="]"):
+            nextChar=arq.read(1)
+            token=RIGHT_SQUARE
+        elif(nextChar=="{"):
+            nextChar=arq.read(1)
+            token=LEFT_BRACES
+        elif(nextChar=="}"):
+            nextChar=arq.read(1)
+            token=RIGHT_BRACES
+        elif(nextChar=="("):
+            nextChar=arq.read(1)
+            token=LEFT_PARENTHESIS
+        elif(nextChar==")"):
+            nextChar=arq.read(1)
+            token=RIGHT_PARENTHESIS
+        elif(nextChar=="&&"):
+            nextChar=arq.read(1)
+            token=AND
+        elif(nextChar=="||"):
+            nextChar=arq.read(1)
+            token=OR
+        elif(nextChar=="<"):
+            nextChar=arq.read(1)
+            if(nextChar)=="=":
+                token=LESS_OR_EQUAL
+                nextChar=arq.read(1)
+            else:
+                token=LESS_THAN
+        elif(nextChar==">"):
+            nextChar=arq.read(1)
+            if(nextChar)=="=":
+                token=GREATER_OR_EQUAL
+                nextChar=arq.read(1)
+            else:
+                token=GREATER_THAN
+        elif(nextChar=="!"):
+            nextChar=arq.read(1)
+            if(nextChar)=="=":
+                token=NOT_EQUAL
+                nextChar=arq.read(1)
+            else:
+                token=NOT
+        elif(nextChar=="*"):
+            nextChar=arq.read(1)
+            token=TIMES
+        elif(nextChar=="."):
+            nextChar=arq.read(1)
+            token=DOT        
+        elif(nextChar=="/"):
+            nextChar=arq.read(1)
+            token=DIVIDE
         else:
             UNKNOWN
     return token
