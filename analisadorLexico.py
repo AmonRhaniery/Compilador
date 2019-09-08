@@ -94,7 +94,7 @@ def getConst(n):
 #LER CARACTER POR CARACTER
 
 arq = open('codigo.txt', 'r')
-nextChar=arq.read(1)
+#nextChar=arq.read(1)
 
 #AUTOMATO FINITO DO ANALISADOR LEXICO
 def isspace(n):
@@ -110,9 +110,13 @@ def isdigit(n):
         return True
     return False
 
+global line
+linha = 1
 def nextToken():
     """Retorna o token lido e suas variáveis token principal e secundário"""
     while(isspace(nextChar)):
+        if (nextChar == "\n") or (nextChar == "\r"):
+            linha+=1
         nextChar=arq.read(1)
     if (isalnum(nextChar)):
         textAux=[]
@@ -236,7 +240,19 @@ def nextToken():
         else:
             UNKNOWN
     return token
-        
+nextChar = arq.read(1)
+Erro=False
+try:
+    while True:
+        tokenAux=nextToken
+    if(tokenAux==UNKNOWN):
+        print("Caracter não esperado na linha " + str(linha))
+        Erro=True
+except EOFError:
+    pass
+
+if (not Erro):
+    print ("Sem erros léxicos.")
         
 arq.close()
 
