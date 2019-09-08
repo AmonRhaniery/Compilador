@@ -1,3 +1,5 @@
+import string
+
 #palavras reservadas
 ARRAY = 0
 BOOLEAN = 1
@@ -58,12 +60,12 @@ PalavrasReservadas = [ARRAY, BOOLEAN, BREAK, CHAR, CONTINUE, DO, ELSE, FALSE, FU
 def searchKeyWord(nome): 
     """Retorna token de PALAVRAS RESERVADAS ou ID"""
     esquerda=0
-    direita=len(palavrasReservadas) - 1
+    direita=len(PalavrasReservadas) - 1
     while esquerda <= direita:
         meio = (esquerda + direita) // 2
-        if palavrasReservadas[meio] == nome:
+        if PalavrasReservadas[meio] == nome:
             return meio #precisa retornar a var?
-        elif palavrasReservadas[meio] > nome:
+        elif PalavrasReservadas[meio] > nome:
             direita = meio - 1
         else: # A[meio] < item
             esquerda = meio + 1
@@ -92,9 +94,9 @@ def getConst(n):
     return vConsts[n]
 
 #LER CARACTER POR CARACTER
-
-arq = open('codigo.txt', 'r')
-#nextChar=arq.read(1)
+arq = open('codigo.ssl', 'r')
+global nextChar
+nextChar = arq.read(1)
 
 #AUTOMATO FINITO DO ANALISADOR LEXICO
 def isspace(n):
@@ -110,9 +112,9 @@ def isdigit(n):
         return True
     return False
 
-global line
 linha = 1
 def nextToken():
+    global nextChar
     """Retorna o token lido e suas variáveis token principal e secundário"""
     while(isspace(nextChar)):
         if (nextChar == "\n") or (nextChar == "\r"):
@@ -240,7 +242,9 @@ def nextToken():
         else:
             UNKNOWN
     return token
-nextChar = arq.read(1)
+
+
+
 Erro=False
 try:
     while True:

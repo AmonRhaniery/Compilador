@@ -1,0 +1,11 @@
+integer a;
+integer b;
+integer c;
+b = 1;
+c = 2;
+a = b + c;
+
+a++;
+b--;
+a&b;
+c|a;
