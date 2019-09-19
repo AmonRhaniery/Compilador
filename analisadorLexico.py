@@ -311,12 +311,15 @@ def analisarLexicamente(arquivo):
     arq=arquivo
     nextChar = arq.read(1)
     tokenAux=nextToken()
+    #print("PILHA DE TOKENS")
     while (tokenAux!=EOF):
         TOKENS.append(tokenAux)
+        #print(tokenAux)
         if(tokenAux==UNKNOWN):
             print("Caracter "+str(ch+1)+" não esperado na linha " + str(linha))
             Erro=True
         tokenAux=nextToken()
+    TOKENS.append(tokenAux)
     if (not Erro):
         print ("Sem erros léxicos.")
             
