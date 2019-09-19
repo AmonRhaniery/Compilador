@@ -62,6 +62,11 @@ PalavrasReservadas = [ARRAY, BOOLEAN, BREAK, CHAR, CONTINUE, DO, ELSE, FALSE, FU
 
 TOKENS=[] #pilha de tokens do arquivo de entrada
 
+Erro=False #indicador de erro do analisador léxico
+
+nextChar="" #próx char do arquivo
+arq = None #variavel responsável por ler o arquivo do código
+
 def searchKeyWord(nome): 
     """Retorna token de PALAVRAS RESERVADAS ou ID"""
     esquerda=0
@@ -99,10 +104,6 @@ def getConst(n):
     """Retorna a constante de token secundário n."""
     return vConsts[n]
 
-#LER CARACTER POR CARACTER
-arq = open('codigo2.ssl', 'r')
-nextChar = arq.read(1)
-
 #AUTOMATO FINITO DO ANALISADOR LEXICO
 def isspace(n):
     if n in [chr(10), chr(13)," ", "\t", "\v", "\f"]:
@@ -124,6 +125,7 @@ def nextToken():
     global nextChar
     global ch
     global linha
+    global arq
     separador=""
     while(isspace(nextChar)):
         if (nextChar == "\n") or (nextChar == "\r"):
@@ -301,16 +303,21 @@ def nextToken():
             token=UNKNOWN
     return token
 
-Erro=False
-tokenAux=nextToken()
-while (tokenAux!=EOF):
-    TOKENS.append(tokenAux)
-    if(tokenAux==UNKNOWN):
-        print("Caracter "+str(ch+1)+" não esperado na linha " + str(linha))
-        Erro=True
+def analisarLexicamente(arquivo):
+    """Executar o analisador Léxico."""
+    global Erro
+    global arq
+    global nextChar
+    arq=arquivo
+    nextChar = arq.read(1)
     tokenAux=nextToken()
+    while (tokenAux!=EOF):
+        TOKENS.append(tokenAux)
+        if(tokenAux==UNKNOWN):
+            print("Caracter "+str(ch+1)+" não esperado na linha " + str(linha))
+            Erro=True
+        tokenAux=nextToken()
+    if (not Erro):
+        print ("Sem erros léxicos.")
+            
 
-if (not Erro):
-    print ("Sem erros léxicos.")
-        
-arq.close()
