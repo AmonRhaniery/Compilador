@@ -81,6 +81,7 @@ def searchName(nome):
     """Adiciona os identificadores num formato Hash juntamente com token secundario.
     O token secundário é a ordem do identificador no texto, sendo considerado a primeira aparição apenas."""
     global cont
+    global Identificadores
     if nome not in Identificadores.keys():
         Identificadores[nome] = cont
         cont = cont + 1
@@ -117,10 +118,10 @@ def isdigit(n):
 linha = 1
 ch=1
 def nextToken():
+    """Retorna o token lido e suas variáveis token principal e secundário"""
     global nextChar
     global ch
     global linha
-    """Retorna o token lido e suas variáveis token principal e secundário"""
     while(isspace(nextChar)):
         if (nextChar == "\n") or (nextChar == "\r"):
             linha+=1
@@ -297,4 +298,3 @@ if (not Erro):
     print ("Sem erros léxicos.")
         
 arq.close()
-

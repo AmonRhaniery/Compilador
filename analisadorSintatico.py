@@ -48,7 +48,7 @@ def tokenTAB(a):
     """Retorna a coluna na tabela ACTION"""
     return TOKEN_TAB_ACTION.index(a)+1
   
-
+Erro = False
 def parse():
     """Analisador Sintático"""
     state = 0 #linha da tabela ACTION
@@ -57,6 +57,7 @@ def parse():
     action = TAB_ACTION_GOTO[state,tokenTAB(tokenLido)]
 
     MAX_STEPS=100
+    cont=0
     while (action!="acc" or cont<MAX_STEPS):
         if (action(0)=="s"):
             """shift to state"""
@@ -76,8 +77,15 @@ def parse():
             cont+=1
         else:
             """erro de sintaxe"""
+            Erro = True
             print("Erro de sintaxe na linha "+lxc.linha)
             break
+
+if (not lxc.Erro):
+    lxc.arq=open('codigo.ssl', 'r')
+    lxc.nextChar=lxc.arq.read(1)
+    parse()
+    lxc.arq.close()
 
             
 
