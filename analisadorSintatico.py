@@ -44,18 +44,26 @@ PILHA = [] #armazena os estados
 #ordem dos tokens na tabela
 TOKEN_TAB_ACTION=[lxc.INTEGER,lxc.CHAR,lxc.BOOLEAN,lxc.STRING,lxc.TYPE,lxc.EQUALS,lxc.ARRAY,lxc.LEFT_BRACES,lxc.RIGHT_BRACES,lxc.OF,lxc.STRUCT,lxc.LEFT_SQUARE,lxc.RIGHT_SQUARE,lxc.SEMI_COLON,lxc.COLON,lxc.FUNCTION,lxc.LEFT_PARENTHESIS,lxc.RIGHT_PARENTHESIS,lxc.COMMA,lxc.VAR,lxc.IF,lxc.ELSE,lxc.WHILE,lxc.DO,lxc.BREAK,lxc.CONTINUE,lxc.AND,lxc.OR,lxc.LESS_THAN,lxc.GREATER_THAN,lxc.LESS_OR_EQUAL,lxc.GREATER_OR_EQUAL,lxc.EQUAL_EQUAL,lxc.NOT_EQUAL,lxc.PLUS,lxc.MINUS,lxc.TIMES,lxc.DIVIDE,lxc.PLUS_PLUS,lxc.MINUS_MINUS,lxc.NOT,lxc.DOT,lxc.ID,lxc.TRUE,lxc.FALSE,lxc.CHARACTER,lxc.STRINGVAL,lxc.NUMERAL,lxc.EOF,PLINHA,P,LDE,DE,T,DT,DC,DF,LP,B,LDV,LS,DV,LI,S,U,M,E,L,R,Y,F,LE,LV,ID,TRUE,FALSE,CHR,STR,NUM]
 
+#contador token do código
+proximo=-1
+
 def tokenTAB(a):
     """Retorna a coluna na tabela ACTION"""
     return TOKEN_TAB_ACTION.index(a)+1
-  
+
+def nextToken():
+    """Retorna token da pilha TOKENS do analisador léxico"""
+    global proximo
+    proximo+=1
+    return lxc.TOKENS[proximo]
+
 Erro = False
 def parse():
     """Analisador Sintático"""
     state = 0 #linha da tabela ACTION
     PILHA.append(state)
-    tokenLido = lxc.nextToken()
+    tokenLido = nextToken()
     action = TAB_ACTION_GOTO[state,tokenTAB(tokenLido)]
-
     MAX_STEPS=100
     cont=0
     while (action!="acc" or cont<MAX_STEPS):
@@ -63,7 +71,7 @@ def parse():
             """shift to state"""
             state=int(action[1:])
             PILHA.append(state)
-            tokenLido=lxc.nextToken()
+            tokenLido=nextToken()
             action = TAB_ACTION_GOTO[state+1,tokenTAB(tokenLido)]
             cont+=1
         elif (action(0)=="r"):
@@ -82,10 +90,7 @@ def parse():
             break
 
 if (not lxc.Erro):
-    lxc.arq=open('codigo2.ssl', 'r')
-    lxc.nextChar=lxc.arq.read(1)
     parse()
-    lxc.arq.close()
 
             
 
