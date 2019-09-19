@@ -63,30 +63,36 @@ def parse():
     state = 0 #linha da tabela ACTION
     PILHA.append(state)
     tokenLido = nextToken()
-    action = TAB_ACTION_GOTO[state,tokenTAB(tokenLido)]
+    action = TAB_ACTION_GOTO[state+1][tokenTAB(tokenLido)]
     MAX_STEPS=100
     cont=0
     while (action!="acc" or cont<MAX_STEPS):
-        if (action(0)=="s"):
+        """ print("TESTE DO TOKENLIDO no passo "+str(cont))
+        print(tokenLido)
+        print("TESTE DA TABELA")
+        print(action)
+        print("TESTE DA PILHA")
+        print(PILHA) """
+        if (action[0]=="s"):
             """shift to state"""
             state=int(action[1:])
             PILHA.append(state)
             tokenLido=nextToken()
-            action = TAB_ACTION_GOTO[state+1,tokenTAB(tokenLido)]
+            action = TAB_ACTION_GOTO[state+1][tokenTAB(tokenLido)]
             cont+=1
-        elif (action(0)=="r"):
+        elif (action[0]=="r"):
             """reduce rule"""
             rule=int(action[1:])
-            for x in range(RIGHT.index(rule-1)):
-                PILHA.pop
-            state=TAB_ACTION_GOTO[PILHA[-1]+1, tokenTAB(LEFT.index(rule-1))]
+            for x in range(RIGHT[rule-1]):
+                PILHA.pop()
+            state=int(TAB_ACTION_GOTO[PILHA[-1]+1][tokenTAB(LEFT[rule-1])])
             PILHA.append(state)
-            action=TAB_ACTION_GOTO[state+1,tokenTAB(tokenLido)]
+            action=TAB_ACTION_GOTO[state+1][tokenTAB(tokenLido)]
             cont+=1
         else:
             """erro de sintaxe"""
             Erro = True
-            print("Erro de sintaxe na linha "+lxc.linha)
+            print("Erro de sintaxe no token "+str(proximo))
             break
     if (not Erro):
         print("Sem erro de sintaxe.")

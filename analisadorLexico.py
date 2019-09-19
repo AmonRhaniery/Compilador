@@ -30,7 +30,7 @@ RIGHT_SQUARE = 23
 LEFT_BRACES = 24
 RIGHT_BRACES = 25
 LEFT_PARENTHESIS = 26
-RIGHT_PARENTHESIS = 2
+RIGHT_PARENTHESIS = 27
 AND = 28
 OR = 29
 LESS_THAN = 30
@@ -58,7 +58,7 @@ UNKNOWN = 48
 EOF=49
 
 #1a etapa: PALAVRAS RESERVADAS
-PalavrasReservadas = [ARRAY, BOOLEAN, BREAK, CHAR, CONTINUE, DO, ELSE, FALSE, FUNCTION, IF, INTEGER, OF, STRING, STRUCT, TRUE, TYPE, VAR, WHILE]
+PalavrasReservadas = ["array", "boolean", "break", "char", "continue", "do", "else", "false", "function", "if", "integer", "of", "string", "struct", "true", "type", "var", "while"]
 
 TOKENS=[] #pilha de tokens do arquivo de entrada
 
@@ -114,7 +114,7 @@ def isalnum(n):
         return True
     return False
 def isdigit(n):
-    if n in [0,1,2,3,4,5,6,7,8,9]:
+    if n in "0123456789":
         return True
     return False
 

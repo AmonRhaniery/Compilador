@@ -1,5 +1,8 @@
-public class HelloWorld {
-  public void printHelloWorld() {
-    System.out.println("Hello World");
-  }
+function main(arg:integer):integer
+{
+	var a:integer;
+	var b:integer;
+	var c:integer;
+	b = 1;
+	c = 2;
 }
