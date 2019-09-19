@@ -5,5 +5,6 @@ import analisadorLexico as lxc
 arq = open('codigo2.ssl', 'r')
 
 lxc.analisarLexicamente(arq)
+lxc.analisarSintaticamente()
 
 arq.close()
