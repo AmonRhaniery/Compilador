@@ -60,6 +60,8 @@ EOF=49
 #1a etapa: PALAVRAS RESERVADAS
 PalavrasReservadas = [ARRAY, BOOLEAN, BREAK, CHAR, CONTINUE, DO, ELSE, FALSE, FUNCTION, IF, INTEGER, OF, STRING, STRUCT, TRUE, TYPE, VAR, WHILE]
 
+TOKENS=[] #pilha de tokens do arquivo de entrada
+
 def searchKeyWord(nome): 
     """Retorna token de PALAVRAS RESERVADAS ou ID"""
     esquerda=0
@@ -98,7 +100,7 @@ def getConst(n):
     return vConsts[n]
 
 #LER CARACTER POR CARACTER
-arq = open('codigo.ssl', 'r')
+arq = open('codigo2.ssl', 'r')
 nextChar = arq.read(1)
 
 #AUTOMATO FINITO DO ANALISADOR LEXICO
@@ -122,6 +124,7 @@ def nextToken():
     global nextChar
     global ch
     global linha
+    separador=""
     while(isspace(nextChar)):
         if (nextChar == "\n") or (nextChar == "\r"):
             linha+=1
@@ -135,7 +138,6 @@ def nextToken():
             textAux.append(nextChar)
             nextChar=arq.read(1)
             ch+=1
-        separador=""
         text=separador.join(textAux)
         token = searchKeyWord(text)
         if(token==ID):
@@ -151,20 +153,27 @@ def nextToken():
         tokenSecundario = addConst(numeral)
     elif (nextChar=="\""):
         stringAux=[]
-        while(nextChar!="\""):
-            stringAux.append(nextChar)
-            nextChar=arq.read(1)
-            ch+=1
+        stringAux.append(nextChar)
+        nextChar=arq.read(1)
+        ch+=1
+        if(nextChar!="\""):
+            while(nextChar!="\""):
+                stringAux.append(nextChar)
+                nextChar=arq.read(1)
+                ch+=1
+        stringAux.append(nextChar)
+        nextChar=arq.read(1)
+        ch+=1
         string=separador.join(stringAux)
         token = STRING
         tokenSecundario = addConst(string)
     else:
-        if(nextChar=="\""):
+        if(nextChar=="\'"):
             nextChar=arq.read(1)
             ch+=1
             token=CHARACTER
             tokenSecundario=addConst(nextChar)
-            nextChar=arq.read(2) #pular o "
+            nextChar=arq.read(2) 
             ch+=2
         elif(nextChar==":"):
             nextChar=arq.read(1)
@@ -192,10 +201,6 @@ def nextToken():
             nextChar=arq.read(1)
             ch+=1
             token=SEMI_COLON
-        elif(nextChar==","):
-            nextChar=arq.read(1)
-            ch+=1
-            token=COMMA
         elif(nextChar==","):
             nextChar=arq.read(1)
             ch+=1
@@ -233,14 +238,24 @@ def nextToken():
             nextChar=arq.read(1)
             ch+=1
             token=RIGHT_PARENTHESIS
-        elif(nextChar=="&&"):
+        elif(nextChar=="&"):
             nextChar=arq.read(1)
             ch+=1
-            token=AND
-        elif(nextChar=="||"):
+            if(nextChar=="&"):
+                nextChar=arq.read(1)
+                ch+=1
+                token=AND
+            else:
+                token=UNKNOWN
+        elif(nextChar=="|"):
             nextChar=arq.read(1)
             ch+=1
-            token=OR
+            if(nextChar=="|"):
+                nextChar=arq.read(1)
+                ch+=1
+                token=OR
+            else:
+                token=UNKNOWN
         elif(nextChar=="<"):
             nextChar=arq.read(1)
             ch+=1
@@ -267,7 +282,7 @@ def nextToken():
                 nextChar=arq.read(1)
                 ch+=1
             else:
-                token=NOT
+                token=NOT 
         elif(nextChar=="*"):
             nextChar=arq.read(1)
             ch+=1
@@ -289,6 +304,7 @@ def nextToken():
 Erro=False
 tokenAux=nextToken()
 while (tokenAux!=EOF):
+    TOKENS.append(tokenAux)
     if(tokenAux==UNKNOWN):
         print("Caracter "+str(ch+1)+" não esperado na linha " + str(linha))
         Erro=True

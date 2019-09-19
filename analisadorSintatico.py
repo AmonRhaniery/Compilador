@@ -82,7 +82,7 @@ def parse():
             break
 
 if (not lxc.Erro):
-    lxc.arq=open('codigo.ssl', 'r')
+    lxc.arq=open('codigo2.ssl', 'r')
     lxc.nextChar=lxc.arq.read(1)
     parse()
     lxc.arq.close()
