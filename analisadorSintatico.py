@@ -85,7 +85,12 @@ def parse():
             rule=int(action[1:])
             for x in range(RIGHT[rule-1]):
                 PILHA.pop()
-            state=int(TAB_ACTION_GOTO[PILHA[-1]+1][tokenTAB(LEFT[rule-1])])
+            try:
+                state=int(TAB_ACTION_GOTO[PILHA[-1]+1][tokenTAB(LEFT[rule-1])])
+            except:
+                print("Erro de sintaxe.")
+                Erro = True
+                break
             PILHA.append(state)
             action=TAB_ACTION_GOTO[state+1][tokenTAB(tokenLido)]
             cont+=1
