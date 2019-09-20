@@ -309,6 +309,8 @@ def analisarLexicamente(arquivo):
     global Erro
     global arq
     global nextChar
+    global TOKENS
+    global LINHAS
     arq=arquivo
     nextChar = arq.read(1)
     tokenAux=nextToken()
