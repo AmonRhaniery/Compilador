@@ -61,6 +61,7 @@ EOF=49
 PalavrasReservadas = ["array", "boolean", "break", "char", "continue", "do", "else", "false", "function", "if", "integer", "of", "string", "struct", "true", "type", "var", "while"]
 
 TOKENS=[] #pilha de tokens do arquivo de entrada
+LINHAS=[] #ordem das linhas dos tokens para encontrar o erro futuramente
 
 Erro=False #indicador de erro do analisador léxico
 
@@ -314,12 +315,14 @@ def analisarLexicamente(arquivo):
     #print("PILHA DE TOKENS")
     while (tokenAux!=EOF):
         TOKENS.append(tokenAux)
+        LINHAS.append(linha)
         #print(tokenAux)
         if(tokenAux==UNKNOWN):
             print("Caracter "+str(ch+1)+" não esperado na linha " + str(linha))
             Erro=True
         tokenAux=nextToken()
     TOKENS.append(tokenAux)
+    LINHAS.append(linha)
     if (not Erro):
         print ("Sem erros léxicos.")
             

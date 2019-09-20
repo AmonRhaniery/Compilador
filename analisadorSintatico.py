@@ -93,7 +93,7 @@ def parse():
             try:
                 state=int(TAB_ACTION_GOTO[PILHA[-1]+1][tokenTAB(LEFT[rule-1])])
             except:
-                print("Erro de sintaxe.")
+                print("Erro de sintaxe na linha "+str(lxc.LINHAS[proximo]))
                 Erro = True
                 break
             PILHA.append(state)
@@ -102,7 +102,7 @@ def parse():
         else:
             """erro de sintaxe"""
             Erro = True
-            print("Erro de sintaxe no token "+str(proximo))
+            print("Erro de sintaxe na linha "+str(lxc.LINHAS[proximo]))
             break
     if (not Erro):
         print("Sem erro de sintaxe.")
