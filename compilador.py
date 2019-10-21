@@ -2,9 +2,8 @@
 import analisadorLexico as lxc
 import analisadorSintatico as stt
 
-arq = open('codigo2.ssl', 'r')
-
-lxc.analisarLexicamente(arq)
+lxc.arq = open('codigo2.ssl', 'r')
+#lxc.analisarLexicamente(arq)
 stt.analisarSintaticamente()
 
-arq.close()
+lxc.arq.close()

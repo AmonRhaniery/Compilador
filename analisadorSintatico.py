@@ -50,16 +50,6 @@ def tokenTAB(a):
     """Retorna a coluna na tabela ACTION"""
     return TOKEN_TAB_ACTION.index(a)+1
 
-def nextToken():
-    """Retorna token da pilha TOKENS do analisador léxico"""
-    global proximo
-    proximo+=1
-    try:
-        return lxc.TOKENS[proximo]
-    except:
-        return lxc.EOF
-
-
 Erro = False
 def parse():
     """Analisador Sintático"""
@@ -67,7 +57,7 @@ def parse():
     PILHA = [] #armazena os estados
     state = 0 #linha da tabela ACTION
     PILHA.append(state)
-    tokenLido = nextToken()
+    tokenLido = lxc.nextToken()
     action = TAB_ACTION_GOTO[state+1][tokenTAB(tokenLido)]
     
     cont=0
@@ -78,11 +68,16 @@ def parse():
         #print(action)
         #print("TESTE DA PILHA")
         #print(PILHA)
+
+        lxc.erroLexico(tokenLido)
+        if(lxc.Erro==True):
+            break
+
         if (action[0]=="s"):
             """shift to state"""
             state=int(action[1:])
             PILHA.append(state)
-            tokenLido=nextToken()
+            tokenLido=lxc.nextToken()
             action = TAB_ACTION_GOTO[state+1][tokenTAB(tokenLido)]
             cont+=1
         elif (action[0]=="r"):
@@ -93,7 +88,7 @@ def parse():
             try:
                 state=int(TAB_ACTION_GOTO[PILHA[-1]+1][tokenTAB(LEFT[rule-1])])
             except:
-                print("Erro de sintaxe na linha "+str(lxc.LINHAS[proximo]))
+                print("Erro de sintaxe na linha "+str(lxc.linha))
                 Erro = True
                 break
             PILHA.append(state)
@@ -102,7 +97,7 @@ def parse():
         else:
             """erro de sintaxe"""
             Erro = True
-            print("Erro de sintaxe na linha "+str(lxc.LINHAS[proximo]))
+            print("Erro de sintaxe na linha "+str(lxc.linha))
             break
     if (not Erro):
         print("Sem erro de sintaxe.")

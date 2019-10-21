@@ -60,14 +60,11 @@ EOF=49
 #1a etapa: PALAVRAS RESERVADAS
 PalavrasReservadas = ["array", "boolean", "break", "char", "continue", "do", "else", "false", "function", "if", "integer", "of", "string", "struct", "true", "type", "var", "while"]
 
-TOKENS=[] #pilha de tokens do arquivo de entrada
-LINHAS=[] #ordem das linhas dos tokens para encontrar o erro futuramente
-
 Erro=False #indicador de erro do analisador léxico
 
-nextChar="" #próx char do arquivo
+nextChar=" " #próx char do arquivo
+global arq 
 arq = None #variavel responsável por ler o arquivo do código
-
 def searchKeyWord(nome): 
     """Retorna token de PALAVRAS RESERVADAS ou ID"""
     esquerda=0
@@ -119,7 +116,9 @@ def isdigit(n):
         return True
     return False
 
+global linha 
 linha = 1
+global ch
 ch=1
 def nextToken():
     """Retorna o token lido e suas variáveis token principal e secundário"""
@@ -304,28 +303,27 @@ def nextToken():
             token=UNKNOWN
     return token
 
+def erroLexico(token):
+    """Verificar erros no analisador Léxico."""
+    if (token==UNKNOWN):
+        Erro=True
+        print("Caracter "+str(ch+1)+" não esperado na linha " + str(linha))
+
 def analisarLexicamente(arquivo):
     """Executar o analisador Léxico."""
     global Erro
     global arq
     global nextChar
-    global TOKENS
-    global LINHAS
     arq=arquivo
     nextChar = arq.read(1)
     tokenAux=nextToken()
-    #print("PILHA DE TOKENS")
     while (tokenAux!=EOF):
-        TOKENS.append(tokenAux)
-        LINHAS.append(linha)
         #print(tokenAux)
         if(tokenAux==UNKNOWN):
             print("Caracter "+str(ch+1)+" não esperado na linha " + str(linha))
             Erro=True
         tokenAux=nextToken()
-    TOKENS.append(tokenAux)
-    LINHAS.append(linha)
     if (not Erro):
         print ("Sem erros léxicos.")
-            
+
 
