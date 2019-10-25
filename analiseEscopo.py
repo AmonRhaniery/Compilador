@@ -413,6 +413,7 @@ def Semantics(rule):
     global name,n,rLabel
     global p,t,f
     global IDD_,IDU_,ID_,T_,LI_,LI0_,LI1_,TRU_,FALS_,STR_,CHR_,NUM_,DC_,DC0_,DC1_,LP_,LP0_,LP1_,E_,E0_,E1_,L_,L0_,L1_,R_,R0_,R1_,Y_,Y0_,Y1_,F_,F0_,F1_,LV_,LV0_,LV1_,MC_,LE_,LE0_,LE1_,MT_,ME_,MW_
+    global curFunction
 
     if (rule == IDD_RULE):
         name = lxc.tokenSecundario
@@ -482,11 +483,13 @@ def Semantics(rule):
         t=T_._.type
         LI_=StackSem.pop()
         p=LI_._.list
+        n=curFunction._.nVars
         while(p!=None and p.eKind==NO_KIND_DEF_):
             p.eKind=VAR_
             p._=Var(t,n,T_.nSize)
             n+=T_.nSize
             p=p.pNext
+        curFunction._.nVars=n
 
     elif(rule==TRUE_RULE):
         TRU_=t_attrib(stt.TRU,None,TRU(bool_,True)) #tem problema ter o None?
