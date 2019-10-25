@@ -585,7 +585,8 @@ def Semantics(rule):
         IDD_=StackSem.pop()
         f=IDD_._.objeto
         f.eKind=FUNCTION_
-        f._=Function(f._.pRetType,f._.pParams,f._.nIndex,0,0)
+        f._=Function(f._.pRetType,f._.pParams,nFuncs,0,0)
+        nFuncs+=1
         #f._=Function(None,None,None,0,0) #E SE F JÁ TIVER VALORES NOS 3 PRIMEIROS CAMPOS?
         NewBlock()
 
