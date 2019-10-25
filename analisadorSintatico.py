@@ -45,14 +45,15 @@ ME = 87
 MW = 88
 
 #Regras armazenadas na forma Left -> Right
+#RIGHT = [1,2,1,1,1,1,1,1,1,1,9,7,4,5,3,8,5,3,4,2,1,2,1,5,3,1,1,1,5,7,7,5,7,1,4,2,2,3,3,1,3,3,3,3,3,3,1,3,3,1,3,3,1,1,2,2,2,2,3,4,2,2,1,1,1,1,1,3,1,3,4,1,1,1,1,1,1,1]
+#LEFT = [P,LDE,LDE,DE,DE,T,T,T,T,T,DT,DT,DT,DC,DC,DF,LP,LP,B,LDV,LDV,LS,LS,DV,LI,LI,S,S,U,U,M,M,M,M,M,M,M,E,E,E,L,L,L,L,L,L,L,R,R,R,Y,Y,Y,F,F,F,F,F,F,F,F,F,F,F,F,F,F,LE,LE,LV,LV,LV,ID,TRUE,FALSE,CHR,STR,NUM]
 RIGHT = [1,		2,		1,		1,		1,		1,		1,		1,		1,		1,		9,		8,		4,		5,		3,		10,		5,		3,		4,		2,		1,		2,		1,		5,		3,		1,		1,		1,		6,		9,		9,		7,		8,		2,		4,		2,		2,		3,		3,		1,		3,		3,		3,		3,		3,		3,		1,		3,		3,		1,		3,		3,		1,		1,		2,		2,		2,		2,		3,		5,		2,		2,		1,		1,		1,		1,		1,		3,		1,		3,		4,		1,		1,		1,		1,		1,			1,			1,		1,		1,		0,		0,		0,		0,		0,		0,		0]
 LEFT =  [P,     LDE,	LDE,	DE,	    DE,	    T,	    T,	    T,      T,  	T,  	DT, 	DT, 	DT, 	DC, 	DC, 	DF, 	LP, 	LP, 	B,  	LDV,	LDV,	LS, 	LS, 	DV, 	LI, 	LI, 	S,  	S,  	U,  	U,  	M,	    M,  	M,  	M,  	M,  	M,  	M,  	E,  	E,  	E,  	L,  	L,  	L,  	L,	    L,  	L,  	L,  	R,  	R,	    R,  	Y,  	Y,  	Y,  	F,  	F,  	F,  	F,  	F,  	F,  	F,  	F,  	F,  	F,  	F,  	F,  	F,  	F,	    LE, 	LE, 	LV,	    LV, 	LV,	    IDD,	IDU,	ID, 	TRUE,   	FALSE,  	CHR,    STR,	NUM,     NB,   	MF,	    MC,	    NF,	    MT, 	ME,	    MW]
 
-TAB_ACTION_GOTO = list(csv.reader(open("TabelaActionGoTo.csv","r"),delimiter="\t"))
-
+#TAB_ACTION_GOTO = list(csv.reader(open("TabelaActionGoToBACKUP.csv","r"),delimiter="\t"))
+TAB_ACTION_GOTO = list(csv.reader(open("action_table_Marcadores.csv","r"),delimiter="\t"))
 #ordem dos tokens na tabela
-TOKEN_TAB_ACTION=[lxc.INTEGER,lxc.CHAR,lxc.BOOLEAN,lxc.STRING,lxc.TYPE,lxc.EQUALS,lxc.ARRAY,lxc.LEFT_SQUARE,lxc.RIGHT_SQUARE,lxc.OF,lxc.STRUCT,lxc.LEFT_BRACES,lxc.RIGHT_BRACES,lxc.SEMI_COLON,lxc.COLON,lxc.FUNCTION,lxc.LEFT_PARENTHESIS,lxc.RIGHT_PARENTHESIS,lxc.COMMA,lxc.VAR,lxc.IF,lxc.ELSE,lxc.WHILE,lxc.DO,lxc.BREAK,lxc.CONTINUE,lxc.AND,lxc.OR,lxc.LESS_THAN,lxc.GREATER_THAN,lxc.LESS_OR_EQUAL,lxc.GREATER_OR_EQUAL,lxc.EQUAL_EQUAL,lxc.NOT_EQUAL,lxc.PLUS,lxc.MINUS,lxc.TIMES,lxc.DIVIDE,lxc.PLUS_PLUS,lxc.MINUS_MINUS,lxc.NOT,lxc.DOT,lxc.ID,lxc.TRUE,lxc.FALSE,lxc.CHARACTER,lxc.STRINGVAL,lxc.NUMERAL,lxc.EOF,PLINHA,P,LDE,DE,T,DT,DC,DF,LP,B,LDV,LS,DV,LI,S,U,M,E,L,R,Y,F,LE,LV,ID,TRUE,FALSE,CHR,STR,NUM]
-
+TOKEN_TAB_ACTION=[lxc.INTEGER,lxc.CHAR,lxc.BOOLEAN,lxc.STRING,lxc.TYPE,lxc.EQUALS,lxc.ARRAY,lxc.LEFT_SQUARE,lxc.RIGHT_SQUARE,lxc.OF,lxc.STRUCT,lxc.LEFT_BRACES,lxc.RIGHT_BRACES,lxc.SEMI_COLON,lxc.COLON,lxc.FUNCTION,lxc.LEFT_PARENTHESIS,lxc.RIGHT_PARENTHESIS,lxc.COMMA,lxc.VAR,lxc.IF,lxc.ELSE,lxc.WHILE,lxc.DO,lxc.BREAK,lxc.CONTINUE,lxc.AND,lxc.OR,lxc.LESS_THAN,lxc.GREATER_THAN,lxc.LESS_OR_EQUAL,lxc.GREATER_OR_EQUAL,lxc.EQUAL_EQUAL,lxc.NOT_EQUAL,lxc.PLUS,lxc.MINUS,lxc.TIMES,lxc.DIVIDE,lxc.PLUS_PLUS,lxc.MINUS_MINUS,lxc.NOT,lxc.DOT,lxc.ID,lxc.TRUE,lxc.FALSE,lxc.CHARACTER,lxc.STRINGVAL,lxc.NUMERAL,lxc.EOF,PLINHA,P,LDE,DE,T,DT,DC,DF,LP,B,LDV,LS,DV,LI,S,U,M,E,L,R,Y,F,LE,LV,IDD,IDU,ID,TRUE,FALSE,CHR,STR,NUM,NB,MF,MC,NF,MT,ME,MW]
 #contador token do código
 proximo=-1
 
@@ -103,8 +104,10 @@ def parse():
                 break
             PILHA.append(state)
             action=TAB_ACTION_GOTO[state+1][tokenTAB(tokenLido)]
-            esc.Semantics(rule)
             cont+=1
+            print("Entrando na regra "+str(rule))
+            esc.Semantics(rule)
+            
         else:
             """erro de sintaxe"""
             Erro = True

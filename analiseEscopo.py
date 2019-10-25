@@ -269,7 +269,7 @@ SymbolTable = []
 global SymbolTableLast
 SymbolTableLast = []
 global nCurrentLevel
-nCurrentLevel = -1
+nCurrentLevel = 0
 
 global labelNo
 labelNo =0
@@ -402,22 +402,69 @@ def CheckTypes(t1,t2):
     else:
         return False
 
-global name,n,rLabel,rLabel1,rLabel2 #tirar labels?
-name,n,rLabel,rLabel1,rLabel2=None
-global p,t,f
-p,t,f= object()
-global IDD_,IDU_,ID_,T_,LI_,LI0_,LI1_,TRU_,FALS_,STR_,CHR_,NUM_,DC_,DC0_,DC1_,LP_,LP0_,LP1_,E_,E0_,E1_,L_,L0_,L1_,R_,R0_,R1_,Y_,Y0_,Y1_,F_,F0_,F1_,LV_,LV0_,LV1_,MC_,LE_,LE0_,LE1_,MT_,ME_,MW_
-IDD_,IDU_,ID_,T_,LI_,LI0_,LI1_,TRU_,FALS_,STR_,CHR_,NUM_,DC_,DC0_,DC1_,LP_,LP0_,LP1_,E_,E0_,E1_,L_,L0_,L1_,R_,R0_,R1_,Y_,Y0_,Y1_,F_,F0_,F1_,LV_,LV0_,LV1_,MC_,LE_,LE0_,LE1_,MT_,ME_,MW_=t_attrib()
+name=""
+n=""
+rLabel=""
+p= object()
+t= object()
+f= object()
+IDD_=t_attrib()
+IDU_=t_attrib()
+ID_=t_attrib()
+T_=t_attrib()
+LI_=t_attrib()
+LI0_=t_attrib()
+LI1_=t_attrib()
+TRU_=t_attrib()
+FALS_=t_attrib()
+STR_=t_attrib()
+CHR_=t_attrib()
+NUM_=t_attrib()
+DC_=t_attrib()
+DC0_=t_attrib()
+DC1_=t_attrib()
+LP_=t_attrib()
+LP0_=t_attrib()
+LP1_=t_attrib()
+E_=t_attrib()
+E0_=t_attrib()
+E1_=t_attrib()
+L_=t_attrib()
+L0_=t_attrib()
+L1_=t_attrib()
+R_=t_attrib()
+R0_=t_attrib()
+R1_=t_attrib()
+Y_=t_attrib()
+Y0_=t_attrib()
+Y1_=t_attrib()
+F_=t_attrib()
+F0_=t_attrib()
+F1_=t_attrib()
+LV_=t_attrib()
+LV0_=t_attrib()
+LV1_=t_attrib()
+MC_=t_attrib()
+LE_=t_attrib()
+LE0_=t_attrib()
+LE1_=t_attrib()
+MT_=t_attrib()
+ME_=t_attrib()
+MW_=t_attrib()
 
 def Semantics(rule):
     global name,n,rLabel
     global p,t,f
     global IDD_,IDU_,ID_,T_,LI_,LI0_,LI1_,TRU_,FALS_,STR_,CHR_,NUM_,DC_,DC0_,DC1_,LP_,LP0_,LP1_,E_,E0_,E1_,L_,L0_,L1_,R_,R0_,R1_,Y_,Y0_,Y1_,F_,F0_,F1_,LV_,LV0_,LV1_,MC_,LE_,LE0_,LE1_,MT_,ME_,MW_
+
     global curFunction
 
     if (rule == IDD_RULE):
         name = lxc.tokenSecundario
-        p=Search(name)
+        try:
+            p=Search(name)
+        except:
+            pass
         if (p!=None):
             Error(ERR_REDCL)
         else:
