@@ -116,6 +116,8 @@ def isdigit(n):
         return True
     return False
 
+global tokenSecundario
+tokenSecundario=None
 global linha 
 linha = 1
 global ch
@@ -126,6 +128,7 @@ def nextToken():
     global ch
     global linha
     global arq
+    global tokenSecundario
     separador=""
     while(isspace(nextChar)):
         if (nextChar == "\n") or (nextChar == "\r"):
