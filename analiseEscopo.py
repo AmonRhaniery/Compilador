@@ -416,7 +416,7 @@ def CheckTypes(t1,t2):
 name=""
 n=""
 rLabel=""
-p= object()
+#p= object()
 t= object()
 f= object()
 IDD_=t_attrib()
@@ -465,11 +465,12 @@ MW_=t_attrib()
 
 def Semantics(rule):
     global name,n,rLabel
-    global p,t,f
+    global t,f
     global IDD_,IDU_,ID_,T_,LI_,LI0_,LI1_,TRU_,FALS_,STR_,CHR_,NUM_,DC_,DC0_,DC1_,LP_,LP0_,LP1_,E_,E0_,E1_,L_,L0_,L1_,R_,R0_,R1_,Y_,Y0_,Y1_,F_,F0_,F1_,LV_,LV0_,LV1_,MC_,LE_,LE0_,LE1_,MT_,ME_,MW_
     global nFuncs
     global curFunction
     global constPool
+    p=None
 
     if (rule == IDD_RULE):
         name = lxc.tokenSecundario
@@ -488,6 +489,7 @@ def Semantics(rule):
 
     elif(rule == IDU_RULE):
         name=lxc.tokenSecundario
+        #print("name = "+str(name))
         p=Find(name)
         if (p==None):
             Error(ERR_NO_DECL)

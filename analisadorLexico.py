@@ -87,9 +87,11 @@ def searchName(nome):
     O token secundário é a ordem do identificador no texto, sendo considerado a primeira aparição apenas."""
     global cont
     global Identificadores
-    if nome not in Identificadores.keys():
+    if nome not in Identificadores:
+        global cont
         Identificadores[nome] = cont
         cont = cont + 1
+    return Identificadores[nome]
 
 #3a etapa: LITERAIS
 vConsts = []
@@ -304,6 +306,7 @@ def nextToken():
             nextChar=arq.read(1)
             ch+=1
             token=UNKNOWN
+    #print("tokenSecundario na linha"+str(linha)+": "+str(tokenSecundario))
     return token
 
 def erroLexico(token):
