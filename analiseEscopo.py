@@ -290,8 +290,10 @@ def NewBlock():
     global SymbolTable
     global SymbolTableLast
     nCurrentLevel+=1
-    SymbolTable[nCurrentLevel]=None
-    SymbolTableLast[nCurrentLevel]=None
+    SymbolTable.append(None)
+    SymbolTableLast.append(None)
+    #SymbolTable[nCurrentLevel]=None
+    #SymbolTableLast[nCurrentLevel]=None
     return nCurrentLevel
 
 def EndBlock():
@@ -301,6 +303,15 @@ def EndBlock():
 
 def Define(aName):
     obj = object('aName,None')
+    try:
+        a=SymbolTable[nCurrentLevel]
+    except:
+        SymbolTable.append(None)
+    try:
+        a=SymbolTableLast[nCurrentLevel]
+    except:
+        SymbolTableLast.append(None)
+
     if (SymbolTable[nCurrentLevel]==None):
         SymbolTable[nCurrentLevel]=obj
         SymbolTableLast[nCurrentLevel]=obj
@@ -320,7 +331,7 @@ def Search (aName):
 
 def Find(aName):
     obj = None
-    for i in nCurrentLevel:
+    for i in range(nCurrentLevel):
         obj = SymbolTable[i]
         while (obj!=None):
             if (obj.nName==aName):
@@ -456,8 +467,9 @@ def Semantics(rule):
     global name,n,rLabel
     global p,t,f
     global IDD_,IDU_,ID_,T_,LI_,LI0_,LI1_,TRU_,FALS_,STR_,CHR_,NUM_,DC_,DC0_,DC1_,LP_,LP0_,LP1_,E_,E0_,E1_,L_,L0_,L1_,R_,R0_,R1_,Y_,Y0_,Y1_,F_,F0_,F1_,LV_,LV0_,LV1_,MC_,LE_,LE0_,LE1_,MT_,ME_,MW_
-
+    global nFuncs
     global curFunction
+    global constPool
 
     if (rule == IDD_RULE):
         name = lxc.tokenSecundario
@@ -629,27 +641,26 @@ def Semantics(rule):
         p._=Param(t,n,T_.nSize)
         LP0_=t_attrib(stt.LP,n+T_.nSize,LP(LP1_._.list))
     elif (rule==NF_RULE):
-        IDD_=StackSem.pop()
+        IDD_=StackSem[-1]
         f=IDD_._.objeto
         f.eKind=FUNCTION_
-        f._=Function(f._.pRetType,f._.pParams,nFuncs,0,0)
+        f._=Function(None,None,nFuncs,0,0) #E SE F JÁ TIVER VALORES NOS 3 PRIMEIROS CAMPOS?
         nFuncs+=1
-        #f._=Function(None,None,None,0,0) #E SE F JÁ TIVER VALORES NOS 3 PRIMEIROS CAMPOS?
         NewBlock()
 
     elif(rule==MF_RULE):
         T_=StackSem.pop()
         LP_=StackSem.pop()
-        IDD_=StackSem.pop()
+        IDD_=StackSem.pop() #TA DANDO VAZIO, É NORMAL?
         f=IDD_._.objeto
         f.eKind=FUNCTION_
         f._=Function(T_._.type,LP_._.list,f._.nIndex,LP_.nSize,LP_.nSize) #E se F n for function
         curFunction=f
-        file.write("BEGIN_FUNC "+str(f._.nIndex)+" "+str(f._.nParams))
+        arq.write("BEGIN_FUNC "+str(f._.nIndex)+" "+str(f._.nParams)+"\n")
 
     elif(rule==DF_RULE):
         EndBlock()
-        file.write("END_FUNC")
+        arq.write("END_FUNC"+"\n")
 
     elif (rule == U_IF_RULE):
 		MT_ = StackSem.pop()
@@ -657,7 +668,7 @@ def Semantics(rule):
 		t = E_._.type
 		if (not CheckTypes(t,bool_)):
 			Error(ERR_BOOL_TYPE_EXPECTED)
-		file.write("L"+str(MT_._.label))
+		arq.write("L"+str(MT_._.label)+"\n")
         
     elif (rule == U_IF_ELSE_U_RULE):
 		ME_ = StackSem.pop()
@@ -666,7 +677,7 @@ def Semantics(rule):
 		t = E_._.type
 		if (not CheckTypes(t,bool_)):
 			Error(ERR_BOOL_TYPE_EXPECTED)
-		file.write("L"+str(ME_._.label))
+		arq.write("L"+str(ME_._.label)+"\n")
 
     elif (rule == M_IF_ELSE_M_RULE):
 		ME_ = StackSem.pop()
@@ -675,7 +686,7 @@ def Semantics(rule):
 		t = E_._.type
 		if not CheckTypes(t,bool_):
 			Error(ERR_BOOL_TYPE_EXPECTED)
-		file.write("L"+str(ME_._.label))
+		arq.write("L"+str(ME_._.label)+"\n")
 
     elif (rule == M_WHILE_RULE):
 		MT_ = StackSem.pop()
@@ -684,7 +695,7 @@ def Semantics(rule):
 		t = E_._.type
 		if (not CheckTypes(t,bool_)):
 			Error(ERR_BOOL_TYPE_EXPECTED)
-		file.write("\tJMP_BW L"+str(MW_._.label)+"\nL"+str(MT_._.label))        
+		arq.write("\tJMP_BW L"+str(MW_._.label)+"\nL"+str(MT_._.label)+"\n")        
 
     elif (rule == M_DO_WHILE_RULE):
 		E_ = StackSem.pop()
@@ -692,7 +703,7 @@ def Semantics(rule):
 		t = E_._.type
 		if (not CheckTypes(t,bool_)):
 			Error(ERR_BOOL_TYPE_EXPECTED)
-		file.write("\tNOT\n\tTJMP_BW L"+str(MW_._.label))  
+		arq.write("\tNOT\n\tTJMP_BW L"+str(MW_._.label)+"\n")  
 
     elif(rule == E_AND_RULE):
         L_=StackSem.pop()
@@ -703,7 +714,7 @@ def Semantics(rule):
             Error(ERR_BOOL_TYPE_EXPECTED)
         E0_=t_attrib(stt.E,None,E(bool_)) #Pode usar None nos campos não declarados?
         StackSem.append(E0_)
-        file.write("\tAND")
+        arq.write("\tAND"+"\n")
     
     elif(rule == E_OR_RULE):
         L_=StackSem.pop()
@@ -714,7 +725,7 @@ def Semantics(rule):
             Error(ERR_BOOL_TYPE_EXPECTED)
         E0_=t_attrib(stt.E,None,E(bool_))
         StackSem.push(E0_)
-        file.write("\tOR")
+        arq.write("\tOR"+"\n")
 
     elif(rule == E_L_RULE):
         L_=StackSem.pop()
@@ -727,7 +738,7 @@ def Semantics(rule):
             Error(ERR_TYPE_MISMATCH)
         L0_=t_attrib(stt.L,None,L(bool_))
         StackSem.append(L0_)
-        file.write("\tLT")
+        arq.write("\tLT"+"\n")
 
     elif(rule == L_GREATER_THAN_RULE):
         R_=StackSem.pop()
@@ -736,7 +747,7 @@ def Semantics(rule):
             Error(ERR_TYPE_MISMATCH)
         L0_=t_attrib(stt.L,None,bool_)
         StackSem.append(L0_)
-        file.write("\tGT")
+        arq.write("\tGT"+"\n")
 
     elif(rule == L_LESS_EQUAL_RULE):
         R_=StackSem.pop()
@@ -745,7 +756,7 @@ def Semantics(rule):
             Error(ERR_TYPE_MISMATCH)
         L0_=t_attrib(stt.L,None,bool_)
         StackSem.append(L0_)
-        file.write("\tLE")
+        arq.write("\tLE"+"\n")
 
     elif (rule == L_GREATER_EQUAL_RULE):
         R_=StackSem.pop()
@@ -754,7 +765,7 @@ def Semantics(rule):
             Error(ERR_TYPE_MISMATCH)
         L0_=t_attrib(stt.L,None,bool_)
         StackSem.append(L0_)
-        file.write("\tGE")
+        arq.write("\tGE"+"\n")
 
     elif(rule == L_EQUAL_EQUAL_RULE):
         R_=StackSem.pop()
@@ -763,7 +774,7 @@ def Semantics(rule):
             Error(ERR_TYPE_MISMATCH)
         L0_=t_attrib(stt.L,None,bool_)
         StackSem.append(L0_)
-        file.write("\tEQ")
+        arq.write("\tEQ"+"\n")
 
     elif(rule == L_NOT_EQUAL_RULE):
         R_=StackSem.pop()
@@ -772,7 +783,7 @@ def Semantics(rule):
             Error(ERR_TYPE_MISMATCH)
         L0_=t_attrib(stt.L,None,bool_)
         StackSem.append(L0_)
-        file.write("\tNE")
+        arq.write("\tNE"+"\n")
 
     elif(rule == L_R_RULE):
         R_=StackSem.pop()
@@ -787,7 +798,7 @@ def Semantics(rule):
             Error(ERR_INVALID_TYPE)
         R0_=t_attrib(stt.R,None,R(R1_._.type))
         StackSem.append(R0_)
-        file.write("\tADD")
+        arq.write("\tADD"+"\n")
 
     elif(rule == R_MINUS_RULE):
         Y_=StackSem.pop()
@@ -798,11 +809,10 @@ def Semantics(rule):
             Error(ERR_INVALID_TYPE)
         R0_=t_attrib(stt.R,None,R(R1_._.type))
         StackSem.append(R0_)
-        file.write("\tSUB")
+        arq.write("\tSUB"+"\n")
 
     elif(rule==R_Y_RULE):
-        Y_=StackSem.top()
-        StackSem.pop()
+        Y_=StackSem.pop()
         R_=t_attrib(stt.R,None,R(Y_._.type))
         StackSem.append(R_)
     elif(rule==Y_TIMES_RULE):
@@ -814,7 +824,7 @@ def Semantics(rule):
             Error(ERR_INVALID_TYPE)
         Y0_=t_attrib(stt.Y,None,Y(Y1_._.type))
         StackSem(Y0_)
-        file.write("\tMUL")
+        arq.write("\tMUL"+"\n")
 
     elif(rule==Y_DIVIDE_RULE):
         F_=StackSem.pop()
@@ -825,7 +835,7 @@ def Semantics(rule):
             Error(ERR_INVALID_TYPE)
         Y0_=t_attrib(stt.Y,None,Y(Y1_._.type))
         StackSem(Y0_)
-        file.write("\tDIV")
+        arq.write("\tDIV"+"\n")
 
     elif(rule==Y_F_RULE):
         F_=StackSem.pop()
@@ -836,15 +846,15 @@ def Semantics(rule):
         n=LV_._.type._.nSize 
         F_=t_attrib(stt.F,None,F(LV_._.type))
         StackSem.append(F_)
-        file.write("\tDE_REF "+str(n))
+        arq.write("\tDE_REF "+str(n)+"\n")
     elif(rule==F_LEFT_PLUS_PLUS_RULE):
         LV_=StackSem.pop()
         t=LV_._.type
         if(not CheckTypes(t,int_)):
             Error(ERR_INVALID_TYPE)
         F_=t_attrib(stt.F,None,F(int_))
-        file.write("\tDUP\n\tDUP\n\tDE_REF 1")
-        file.write("\tINC\n\tSTORE REF 1\n\tDE_REF 1")
+        arq.write("\tDUP\n\tDUP\n\tDE_REF 1"+"\n")
+        arq.write("\tINC\n\tSTORE REF 1\n\tDE_REF 1"+"\n")
 
 
     elif(rule==F_LEFT_MINUS_MINUS_RULE):
@@ -854,8 +864,8 @@ def Semantics(rule):
             Error(ERR_INVALID_TYPE)
         F_=t_attrib(stt.F,None,F(LV_._.type))
         StackSem.append(F_)
-        file.write("\tDUP\n\tDUP\n\tDE_REF 1")
-        file.write("\tDEC\n\tSTORE_REF 1\n\tDE_REF 1")
+        arq.write("\tDUP\n\tDUP\n\tDE_REF 1"+"\n")
+        arq.write("\tDEC\n\tSTORE_REF 1\n\tDE_REF 1"+"\n")
 
     elif(rule==F_RIGHT_PLUS_PLUS_RULE):
         LV_=StackSem.pop()
@@ -864,9 +874,9 @@ def Semantics(rule):
             Error(ERR_INVALID_TYPE)
         F_=t_attrib(stt.F,None,F(LV_._.type))
         StackSem.append(F_)
-        file.write("\tDUP\n\tDUP\n\tDE_REF 1")
-        file.write("\tINC\n\tSTORE_REF 1\n\tDE_REF 1")
-        file.write("\tDEC")
+        arq.write("\tDUP\n\tDUP\n\tDE_REF 1"+"\n")
+        arq.write("\tINC\n\tSTORE_REF 1\n\tDE_REF 1"+"\n")
+        arq.write("\tDEC"+"\n")
 
     elif(rule==F_RIGHT_MINUS_MINUS_RULE):
         LV_=StackSem.pop()
@@ -875,9 +885,9 @@ def Semantics(rule):
             Error(ERR_INVALID_TYPE)
         F_=t_attrib(stt.F,None,F(t))
         StackSem.append(F_)
-        file.write("\tDUP\n\tDUP\n\tDE_REF 1")
-        file.write("\tDEC\n\tSTORE_REF 1\n\tDE_REF 1")
-        file.write("\tINC")
+        arq.write("\tDUP\n\tDUP\n\tDE_REF 1"+"\n")
+        arq.write("\tDEC\n\tSTORE_REF 1\n\tDE_REF 1"+"\n")
+        arq.write("\tINC"+"\n")
 
     elif(rule==F_PARENTHESIS_E_RULE):
         E_=StackSem.pop()
@@ -890,7 +900,7 @@ def Semantics(rule):
             Error(ERR_INVALID_TYPE)
         F0_=t_attrib(stt.F,None,F(t))
         StackSem.append(F0_)
-        file.write("\tNEG")
+        arq.write("\tNEG"+"\n")
 
     elif(rule==F_NOT_F_RULE):
         F1_=StackSem.pop()
@@ -899,26 +909,26 @@ def Semantics(rule):
             Error(ERR_INVALID_TYPE)
         F0_=t_attrib(stt.F,None,F(t))
         StackSem.append(F0_)
-        file.write("\tNOT")
+        arq.write("\tNOT"+"\n")
 
     elif(rule==F_TRUE_RULE):
         TRU_=StackSem.pop()
         F_=t_attrib(stt.F,None,F(bool_))
         StackSem.append(F_)
-        file.write("\tLOAD_TRUE")
+        arq.write("\tLOAD_TRUE"+"\n")
 
     elif(rule==F_FALSE_RULE):
         FALS_=StackSem.pop()
         F_=t_attrib(stt.F,None,F(bool_))
         StackSem.append(F_)
-        file.write("\tLOAD_FALSE")
+        arq.write("\tLOAD_FALSE"+"\n")
 
     elif(rule==F_CHR_RULE):
         CHR_=StackSem.pop()
         F_=t_attrib(stt.F,None,F(char_))
         StackSem.append(F_)
         n=lxc.tokenSecundario
-        file.write("\tLOAD_CONST "+str(constPool))
+        arq.write("\tLOAD_CONST "+str(constPool)+"\n")
         constPool+=1
 
     elif(rule==F_STR_RULE):
@@ -926,7 +936,7 @@ def Semantics(rule):
         F_=t_attrib(stt.F,None,F(string_))
         StackSem.append(F_)
         n=lxc.tokenSecundario
-        file.write("\tLOAD_CONST "+str(constPool))
+        arq.write("\tLOAD_CONST "+str(constPool)+"\n")
         constPool+=1
 
     elif(rule==F_NUM_RULE):
@@ -934,7 +944,7 @@ def Semantics(rule):
         F_=t_attrib(stt.F,None,F(int_)) # os int_ etc são ponteiros no voltan, o que isso muda? Eles apontem pro ultimo que é o tipo?
         StackSem.append(F_)
         n=lxc.tokenSecundario
-        file.write("\tLOAD_CONST "+str(constPool))
+        arq.write("\tLOAD_CONST "+str(constPool)+"\n")
         constPool+=1
 
     elif(rule == LV_DOT_RULE):
@@ -958,7 +968,7 @@ def Semantics(rule):
                 LV0_=t_attrib(stt.LV,None,LV(p._.tipo))
                 LV0._.type._=Type(None,p._.nSize)
         StackSem.append(LV0_)
-        file.write("\tADD "+str(p._.nIndex))
+        arq.write("\tADD "+str(p._.nIndex)+"\n")
 
     elif(rule == LV_SQUARE_RULE):
         E_=StackSem.pop()
@@ -973,8 +983,8 @@ def Semantics(rule):
         else:
             LV0_=t_attrib(stt.LV,None,LV(t._.tipoElemento))
             n=t._tipoElemento._.nSize
-            file.write("\tMUL "+str(n))
-            file.write("\tADD")
+            arq.write("\tMUL "+str(n)+"\n")
+            arq.write("\tADD"+"\n")
         if(not CheckTypes(E_._.type,int_)):
             Error(ERR_INVALID_INDEX_TYPE)
         StackSem.append(LV0_)
@@ -990,13 +1000,14 @@ def Semantics(rule):
         else:
             LV_=t_attrib(stt.LV,None,LV(p._tipo))
             LV_._.type._=Type(None,p._.nSize)
+            arq.write("\tLOAD_REF "+str(p._.nIndex)+"\n")
         StackSem.append(LV_)
-        file.write("\tLOAD_REF "+str(p._.nIndex))
+        
 
     #colocar regras E
 
     elif(rule==MC_RULE):
-        IDU_=StackSem.pop()
+        IDU_=StackSem[-1]
         f=IDU_._.objeto
         if(f.eKind!=FUNCTION_):
             MC_=t_attrib(stt.MC,None,MC(universal_,None,True))
@@ -1005,7 +1016,7 @@ def Semantics(rule):
         StackSem.append(MC_)
     elif(rule==LE_E_RULE):
         E_=StackSem.pop()
-        MC_=StackSem.pop()
+        MC_=StackSem[-1]
         LE_=t_attrib(stt.LE,None,LE(None,None,MC_._.err,1))
         if(not MC_._.err):
             p=MC_._.param 
@@ -1045,28 +1056,35 @@ def Semantics(rule):
             elif (LE_._.n-1 > f._.nParams):
                 Error(ERR_TOO_MANY_ARG)
         StackSem.append(F_)
-        file.write("\tCALL "+str(f._.nIndex))
+        arq.write("\tCALL "+str(f._.nIndex)+"\n")
 
     elif(rule==MT_RULE):
         rLabel=newLabel()
         MT_=t_attrib(stt.MT,None,MT(rLabel))
         StackSem.append(MT_)
-        file.write("\tTJMP_FW L"+str(rLabel))
+        arq.write("\tTJMP_FW L"+str(rLabel)+"\n")
 
     elif(rule==ME_RULE):
-        MT_=StackSem.pop()
+        MT_=StackSem[-1]
         rLabel=newLabel()
         ME._.label=rLabel
         ME_.t_nont=stt.ME
         StackSem.append(ME_)
-        file.write("\tTJMP_FW L"+str(rLabel))
-        file.write("L"+str(MT_._.label))
+        arq.write("\tTJMP_FW L"+str(rLabel)+"\n")
+        arq.write("L"+str(MT_._.label)+"\n")
 
     elif(rule==MW_RULE):
         rLabel=newLabel()
         MW_._.label=rLabel
         StackSem.append(MW_)
-        file.write("L"+str(rLabel))
+        arq.write("L"+str(rLabel)+"\n")
+
+    elif(rule==M_BREAK_RULE):
+        MT_=StackSem[-1]
+
+    elif(M_CONTINUE_RULE):
+        pass
+    
 
 
 

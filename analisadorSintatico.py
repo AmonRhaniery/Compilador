@@ -105,7 +105,7 @@ def parse():
             PILHA.append(state)
             action=TAB_ACTION_GOTO[state+1][tokenTAB(tokenLido)]
             cont+=1
-            print("Entrando na regra "+str(rule))
+            #print("Entrando na regra "+str(rule))
             esc.Semantics(rule)
             
         else:
