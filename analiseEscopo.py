@@ -302,7 +302,9 @@ def EndBlock():
     return nCurrentLevel
 
 def Define(aName):
-    obj = object('aName,None')
+    global SymbolTable
+    global SymbolTableLast
+    obj = object(aName,None)
     try:
         a=SymbolTable[nCurrentLevel]
     except:
@@ -316,11 +318,19 @@ def Define(aName):
         SymbolTable[nCurrentLevel]=obj
         SymbolTableLast[nCurrentLevel]=obj
     else:
-        SymbolTable[nCurrentLevel].pNext = obj
-        SymbolTableLast[nCurrentLevel]=obj
+        aux=SymbolTable[nCurrentLevel]
+        while True:
+            if(aux.pNext==None):
+                aux.pNext = obj
+                SymbolTableLast[nCurrentLevel]=obj
+                break
+            else:
+                aux=aux.pNext
+    #printSymbolTable()
     return obj
 
 def Search (aName):
+    global SymbolTable
     obj = SymbolTable[nCurrentLevel]
     while (obj!= None):
         if (obj.nName == aName):
@@ -330,17 +340,19 @@ def Search (aName):
     return obj
 
 def Find(aName):
+    global SymbolTable
     obj = None
-    for i in range(nCurrentLevel):
+    for i in range(nCurrentLevel+1):
         obj = SymbolTable[i]
         while (obj!=None):
+            #print(obj.nName)
             if (obj.nName==aName):
                 break
             else:
                 obj = obj.pNext
         if (obj!=None):
             break
-        return obj
+    return obj
 
 hasErr = False
 StackSem = []
@@ -413,6 +425,16 @@ def CheckTypes(t1,t2):
     else:
         return False
 
+def printSymbolTable():
+    global SymbolTable
+    tamanho=len(SymbolTable)
+    if len>0:
+        obj=SymbolTable[nCurrentLevel]
+        print("SymbolTable:")
+        while(obj!=None):
+            print(obj.nName)
+            obj=obj.pNext
+
 name=""
 n=""
 rLabel=""
@@ -470,6 +492,7 @@ def Semantics(rule):
     global nFuncs
     global curFunction
     global constPool
+    global SymbolTable
     p=None
 
     if (rule == IDD_RULE):
@@ -1000,7 +1023,7 @@ def Semantics(rule):
                 Error(ERR_KIND_NOT_VAR)
             LV_=t_attrib(stt.LV,None,LV(universal_))
         else:
-            LV_=t_attrib(stt.LV,None,LV(p._tipo))
+            LV_=t_attrib(stt.LV,None,LV(p._.tipo))
             LV_._.type._=Type(None,p._.nSize)
             arq.write("\tLOAD_REF "+str(p._.nIndex)+"\n")
         StackSem.append(LV_)
