@@ -113,8 +113,8 @@ def parse():
             Erro = True
             print("Erro de sintaxe na linha "+str(lxc.linha))
             break
-    if (not Erro):
-        print("Sem erro de sintaxe.")
+    #if (not Erro):
+        #print("Sem erro de sintaxe.")
 
 def analisarSintaticamente():
     if (not lxc.Erro):

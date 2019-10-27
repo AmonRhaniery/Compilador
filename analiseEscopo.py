@@ -356,11 +356,11 @@ def Find(aName):
 
 hasErr = False
 StackSem = []
-int_ = object(-1,None,SCALAR_TYPE_)
-char_ = object(-1,None,SCALAR_TYPE_)
-bool_ = object(-1,None,SCALAR_TYPE_)
-string_ = object(-1,None,SCALAR_TYPE_)
-universal_ = object(-1,None,SCALAR_TYPE_)
+int_ = object(-1,None,SCALAR_TYPE_,Type(None,1))
+char_ = object(-1,None,SCALAR_TYPE_,Type(None,1))
+bool_ = object(-1,None,SCALAR_TYPE_,Type(None,1))
+string_ = object(-1,None,SCALAR_TYPE_,Type(None,1))
+universal_ = object(-1,None,SCALAR_TYPE_,Type(None,1))
 
 def Error(code):
     hasErr = True
@@ -918,6 +918,8 @@ def Semantics(rule):
         E_=StackSem.pop()
         F_=t_attrib(stt.F,None,F(E_._.type))
         StackSem.append(F_)
+
+
     elif(rule==F_MINUS_F_RULE):
         F1_=StackSem.pop()
         t=F1_._.type
@@ -1107,9 +1109,21 @@ def Semantics(rule):
     elif(rule==M_BREAK_RULE):
         MT_=StackSem[-1]
 
-    elif(M_CONTINUE_RULE):
+    elif(rule==M_CONTINUE_RULE):
         pass
     
+    elif(rule==M_E_SEMICOLON):
+        E_=StackSem.pop()
+        LV_=StackSem.pop()
+        if(not CheckTypes(LV_._.type,E_._.type)):
+            Error(ERR_TYPE_MISMATCH)
+        t=LV_._.type
+        E0_._=F(E_._.type)
+        StackSem.append(E0_)
+        if(t._.nSize==None):
+            arq.write("\tSTORE_REF 1\n")
+        else:
+            arq.write("\tSTORE_REF "+str(t._.nSize)+"\n")
 
 
 
